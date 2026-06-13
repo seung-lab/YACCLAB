@@ -17,6 +17,9 @@ target_sources(YACCLAB
         labeling_wu_2009.cc
         labeling_wychang_2015.cc
         labeling_zhao_2010.cc
+
+        labeling2D_4_naive_uf.cc
+        
         labels_solver.cc
         main.cc
         system_info.cc
