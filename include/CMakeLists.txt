@@ -31,7 +31,8 @@ target_sources(YACCLAB
         labeling_wychang_2015_tree_0.inc.h
         labeling_zhao_2010.h
         
-        labeling2D_4_naive_uf.h
+        labeling2D_4_sauf.h
+        labeling2D_4_phantom.h
         
         labels_solver.h
         memory_tester.h
