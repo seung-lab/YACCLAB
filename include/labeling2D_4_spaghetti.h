@@ -238,40 +238,116 @@ public:
 
         LabelsSolver::MemSetup();
 
-        // Rosenfeld Mask
+        // First scan
+
+        // We work with the 4-conn Rosenfeld mask
         //   +-+
-        //   |n|
+        //   |q|
         // +-+-+
-        // |w|x|
+        // |s|x|
         // +-+-+
 
-        // First scan
-        for (int r = 0; r < h; ++r) {
+        // A bunch of defines is used to check if the pixels are foreground
+        // and to define actions to be performed
+        {
+
+#define CONDITION_Q img_row_prev[c] > 0
+#define CONDITION_S img_row[c - 1] > 0
+#define CONDITION_X img_row[c] > 0
+
+#define ACTION_1 img_labels_row[c] = 0;
+#define ACTION_2 img_labels_row[c] = LabelsSolver::NewLabel();
+#define ACTION_3 img_labels_row[c] = img_labels_row_prev[c]; // x <- q
+#define ACTION_4 img_labels_row[c] = img_labels_row[c - 1]; // x <- s
+#define ACTION_5 img_labels_row[c] = LabelsSolver::Merge(img_labels_row[c - 1], img_labels_row_prev[c]); // x <- s + q
+        }
+
+        // First row
+        {
+            unsigned char const * const img_row = img_.ptr<unsigned char>(0);
+            unsigned char const * const img_row_prev = (unsigned char *)(((char *)img_row) - img_.step.p[0]);
+            unsigned * const  img_labels_row = img_labels_.ptr<unsigned>(0);
+            unsigned * const  img_labels_row_prev = (unsigned *)(((char *)img_labels_row) - img_labels_.step.p[0]);
+
+            int c = -1;
+
+            goto fl_tree_0;
+        fl_tree_0: if ((c += 1) >= w) goto fl_break;
+            if (CONDITION_X) {
+                ACTION_2
+                    goto fl_tree_1;
+            }
+            else {
+                ACTION_1
+                    goto fl_tree_0;
+            }
+        fl_tree_1: if ((c += 1) >= w) goto fl_break;
+            if (CONDITION_X) {
+                ACTION_4
+                    goto fl_tree_1;
+            }
+            else {
+                ACTION_1
+                    goto fl_tree_0;
+            }
+        fl_break:;
+        }
+
+        // Other rows
+        for (int r = 1; r < h; ++r) {
             // Get row pointers
             unsigned char const * const img_row = img_.ptr<unsigned char>(r);
             unsigned char const * const img_row_prev = (unsigned char *)(((char *)img_row) - img_.step.p[0]);
             unsigned * const  img_labels_row = img_labels_.ptr<unsigned>(r);
             unsigned * const  img_labels_row_prev = (unsigned *)(((char *)img_labels_row) - img_labels_.step.p[0]);
+            
+            int c = -1;
 
-            for (int c = 0; c < w; ++c) {
-                if (img_row[c] == 0) {
-                    continue;
-                }
-                else if (c > 0 && img_row[c-1] > 0) {
-                    if (r > 0 && img_row_prev[c] > 0) {
-                        img_labels_row[c] = LabelsSolver::Merge(img_labels_row[c - 1], img_labels_row_prev[c]); // x <- w + n
-                    }
-                    else {
-                        img_labels_row[c] = img_labels_row[c - 1]; // x <- w
-                    }
-                }
-                else if (r > 0 && img_row_prev[c] > 0) {
-                    img_labels_row[c] = img_labels_row_prev[c]; // x <- n
+            goto cl_tree_0;
+        cl_tree_0: if ((c += 1) >= w) goto cl_break;
+            if (CONDITION_X) {
+                if (CONDITION_Q) {
+                    ACTION_3
+                        goto cl_tree_1;
                 }
                 else {
-                    img_labels_row[c] = LabelsSolver::NewLabel();
+                    ACTION_2
+                        goto cl_tree_1;
                 }
             }
+            else {
+                ACTION_1
+                    goto cl_tree_0;
+            }
+        cl_tree_1: if ((c += 1) >= w) goto cl_break;
+            if (CONDITION_X) {
+                if (CONDITION_Q) {
+                    ACTION_5
+                        goto cl_tree_1;
+                }
+                else {
+                    ACTION_4
+                        goto cl_tree_1;
+                }
+            }
+            else {
+                ACTION_1
+                    goto cl_tree_0;
+            }
+        cl_break:;
+        }
+
+        // undef conditions and actions
+        {
+#undef ACTION_1
+#undef ACTION_2
+#undef ACTION_3
+#undef ACTION_4
+#undef ACTION_5
+
+#undef CONDITION_Q
+#undef CONDITION_S
+#undef CONDITION_X
         }
 
         // Second scan
@@ -326,40 +402,116 @@ private:
 
         LabelsSolver::Setup();
 
-        // Rosenfeld Mask
+                // First scan
+
+        // We work with the 4-conn Rosenfeld mask
         //   +-+
-        //   |n|
+        //   |q|
         // +-+-+
-        // |w|x|
+        // |s|x|
         // +-+-+
 
-        // First scan
-        for (int r = 0; r < h; ++r) {
+        // A bunch of defines is used to check if the pixels are foreground
+        // and to define actions to be performed
+        {
+
+#define CONDITION_Q img_row_prev[c] > 0
+#define CONDITION_S img_row[c - 1] > 0
+#define CONDITION_X img_row[c] > 0
+
+#define ACTION_1 img_labels_row[c] = 0;
+#define ACTION_2 img_labels_row[c] = LabelsSolver::NewLabel();
+#define ACTION_3 img_labels_row[c] = img_labels_row_prev[c]; // x <- q
+#define ACTION_4 img_labels_row[c] = img_labels_row[c - 1]; // x <- s
+#define ACTION_5 img_labels_row[c] = LabelsSolver::Merge(img_labels_row[c - 1], img_labels_row_prev[c]); // x <- s + q
+        }
+
+        // First row
+        {
+            unsigned char const * const img_row = img_.ptr<unsigned char>(0);
+            unsigned char const * const img_row_prev = (unsigned char *)(((char *)img_row) - img_.step.p[0]);
+            unsigned * const  img_labels_row = img_labels_.ptr<unsigned>(0);
+            unsigned * const  img_labels_row_prev = (unsigned *)(((char *)img_labels_row) - img_labels_.step.p[0]);
+
+            int c = -1;
+
+            goto fl_tree_0;
+        fl_tree_0: if ((c += 1) >= w) goto fl_break;
+            if (CONDITION_X) {
+                ACTION_2
+                    goto fl_tree_1;
+            }
+            else {
+                ACTION_1
+                    goto fl_tree_0;
+            }
+        fl_tree_1: if ((c += 1) >= w) goto fl_break;
+            if (CONDITION_X) {
+                ACTION_4
+                    goto fl_tree_1;
+            }
+            else {
+                ACTION_1
+                    goto fl_tree_0;
+            }
+        fl_break:;
+        }
+
+        // Other rows
+        for (int r = 1; r < h; ++r) {
             // Get row pointers
             unsigned char const * const img_row = img_.ptr<unsigned char>(r);
             unsigned char const * const img_row_prev = (unsigned char *)(((char *)img_row) - img_.step.p[0]);
             unsigned * const  img_labels_row = img_labels_.ptr<unsigned>(r);
             unsigned * const  img_labels_row_prev = (unsigned *)(((char *)img_labels_row) - img_labels_.step.p[0]);
+            
+            int c = -1;
 
-            for (int c = 0; c < w; ++c) {
-                if (img_row[c] == 0) {
-                    continue;
-                }
-                else if (c > 0 && img_row[c-1] > 0) {
-                    if (r > 0 && img_row_prev[c] > 0) {
-                        img_labels_row[c] = LabelsSolver::Merge(img_labels_row[c - 1], img_labels_row_prev[c]); // x <- w + n
-                    }
-                    else {
-                        img_labels_row[c] = img_labels_row[c - 1]; // x <- w
-                    }
-                }
-                else if (r > 0 && img_row_prev[c] > 0) {
-                    img_labels_row[c] = img_labels_row_prev[c]; // x <- n
+            goto cl_tree_0;
+        cl_tree_0: if ((c += 1) >= w) goto cl_break;
+            if (CONDITION_X) {
+                if (CONDITION_Q) {
+                    ACTION_3
+                        goto cl_tree_1;
                 }
                 else {
-                    img_labels_row[c] = LabelsSolver::NewLabel();
+                    ACTION_2
+                        goto cl_tree_1;
                 }
             }
+            else {
+                ACTION_1
+                    goto cl_tree_0;
+            }
+        cl_tree_1: if ((c += 1) >= w) goto cl_break;
+            if (CONDITION_X) {
+                if (CONDITION_Q) {
+                    ACTION_5
+                        goto cl_tree_1;
+                }
+                else {
+                    ACTION_4
+                        goto cl_tree_1;
+                }
+            }
+            else {
+                ACTION_1
+                    goto cl_tree_0;
+            }
+        cl_break:;
+        }
+
+        // undef conditions and actions
+        {
+#undef ACTION_1
+#undef ACTION_2
+#undef ACTION_3
+#undef ACTION_4
+#undef ACTION_5
+
+#undef CONDITION_Q
+#undef CONDITION_S
+#undef CONDITION_X
         }
     }
     void SecondScan()
