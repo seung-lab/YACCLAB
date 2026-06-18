@@ -33,6 +33,8 @@ target_sources(YACCLAB
         
         labeling2D_4_sauf.h
         labeling2D_4_phantom.h
+        labeling2D_4_phantom_fsm.h
+        labeling2D_4_spaghetti.h
         
         labels_solver.h
         memory_tester.h
