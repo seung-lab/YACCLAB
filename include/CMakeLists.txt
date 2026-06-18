@@ -31,7 +31,6 @@ target_sources(YACCLAB
         labeling_wychang_2015_tree_0.inc.h
         labeling_zhao_2010.h
         
-        labeling2D_4_sauf.h
         labeling2D_4_phantom.h
         labeling2D_4_phantom_fsm.h
         labeling2D_4_spaghetti.h
