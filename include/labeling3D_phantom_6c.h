@@ -226,7 +226,7 @@ public:
 					if (x > 0 && img_row[x-1]) {
 						if (y > 0 && img_prev_row[x] && !img_prev_row[x-1]) {
 							labels_row[x] = LabelsSolver::Merge(labels_row[x-1], labels_prev_row[x]);
-							if (z > 0 && img_prev_plane_rows[1][x]) {
+							if (z > 0 && img_prev_plane_rows[1][x] && !img_prev_plane_rows[0][x]) {
 								LabelsSolver::Merge(labels_row[x], labels_prev_plane_rows[1][x]);
 							}
 						}
