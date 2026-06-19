@@ -1,3 +1,74 @@
+CPU 2D 4-way connectivity:
+
+  execute: true
+  
+  # Tests to perform and their number of repetitions
+  # ------------------------------------------------
+  
+  perform: 
+    correctness:        true
+    average:            true
+    average_with_steps: false
+    density:            false
+    granularity:        true
+    memory:             false
+    
+  correctness_tests: 
+    eight_connectivity_standard: true
+    eight_connectivity_steps:    true
+    eight_connectivity_memory:   false
+  
+  tests_number: 
+    average:             10
+    average_with_steps:  10
+    density:             10
+    granularity:         10
+  
+  # List of 2D CPU CCL algorithms to test
+  # -------------------------------------
+  
+  algorithms: 
+    # - SAUF4C_UF
+    # - SAUF4C_RemSP
+    # - SAUF4C_TTA
+    - SAUF4C_UFPC
+    # - PHANTOM_2D_4_UF
+    # - PHANTOM_2D_4_RemSP
+    # - PHANTOM_2D_4_TTA
+    - PHANTOM_2D_4_UFPC
+    # - PHANTOM_FSM_2D_4_UF
+    # - PHANTOM_FSM_2D_4_RemSP
+    # - PHANTOM_FSM_2D_4_TTA
+    - PHANTOM_FSM_2D_4_UFPC
+    # - SPAGHETTI_4_UF
+    # - SPAGHETTI_4_RemSP
+    # - SPAGHETTI_4_TTA
+    - SPAGHETTI_4_UFPC
+
+  # Algorithms which require to specify a labels solver are: SAUF, BBDT, CCIT, LSL, CTB, PRED, DRAG and Spaghetti
+  # Possible labels solvers are: UF, UFPC, RemSP, TTA
+  # LSL requires also a version specifier: STD, STDZ, RLE, RLEZ; only UF and TTA solvers can be used with LSL
+  # Algorithms which don't require to specify a labels solver are: DiStefano, CT, SBLA, NULL
+  
+  # Datasets to use for each test
+  # -----------------------------
+  
+  # Note that perform correctness tests on labeling_NULL algorithm does not make sense
+  check_datasets: ["check", "3dpes", "fingerprints", "hamlet", "medical", "mirflickr", "tobacco800", "xdocs"]
+  # check_datasets: ["medical"]
+    
+  # List of datasets on which "Average Runtime Tests" shall be run
+  average_datasets: ["3dpes", "fingerprints", "hamlet", "medical", "mirflickr", "tobacco800", "xdocs"]
+  # average_datasets: ["medical"]
+    
+  # List of datasets on which "Average Runtime Tests With Steps" shall be run
+  average_datasets_with_steps: ["3dpes", "fingerprints", "hamlet", "medical", "mirflickr", "tobacco800", "xdocs"]
+  
+  # List of datasets on which "Memory Tests" shall be run
+  memory_datasets: ["3dpes", "fingerprints", "hamlet", "medical", "mirflickr", "tobacco800", "xdocs"]
+    
+  # Save the results of each run test
+  save_middle_tests: {average: false, average_with_steps: false, density: false, granularity: false}
 
 CPU 2D 8-way connectivity:
 
