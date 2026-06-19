@@ -4,8 +4,8 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-#ifndef YACCLAB_LABELING_NAIVE_3D_H_
-#define YACCLAB_LABELING_NAIVE_3D_H_
+#ifndef YACCLAB_LABELING_SAUF_6C_H_
+#define YACCLAB_LABELING_SAUF_6C_H_
 
 #include <opencv2/core.hpp>
 
@@ -272,4 +272,4 @@ public:
 	}
 };
 
-#endif // !YACCLAB_LABELING_NAIVE_3D_H_
+#endif // !YACCLAB_LABELING_SAUF_6C_H_
