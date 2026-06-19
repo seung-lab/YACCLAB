@@ -74,6 +74,7 @@ public:
 
 				for (int x = 0; x < img_.size[2]; x++) {
 					if (!img_row[x]) {
+						labels_row[x] = 0;
 						continue;
 					}
 					
@@ -149,7 +150,7 @@ public:
 	double Alloc()
 	{
 		// Memory allocation of the labels solver
-		double ls_t = LabelsSolver::Alloc(UPPER_BOUND_26_CONNECTIVITY, perf_);
+		double ls_t = LabelsSolver::Alloc(UPPER_BOUND_6_CONNECTIVITY, perf_);
 		// Memory allocation for the output image
 		perf_.start();
 		img_labels_.create(3, img_.size.p, CV_32SC1);
@@ -218,6 +219,7 @@ public:
 
 				for (int x = 0; x < img_.size[2]; x++) {
 					if (!img_row[x]) {
+						labels_row[x] = 0;
 						continue;
 					}
 					
