@@ -106,7 +106,7 @@ public:
 
     virtual ~Labeling3D() = default;
 
-    virtual std::string CheckAlg() const { return LabelingCheckSingleton3D::GetCheckAlg(Conn, LabelBackground); }
+    virtual std::string CheckAlg() const override { return LabelingCheckSingleton3D::GetCheckAlg(Conn, LabelBackground); }
 
     virtual bool IsLabelBackground() const override { return LabelBackground; }
 

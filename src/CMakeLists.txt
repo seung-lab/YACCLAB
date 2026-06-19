@@ -21,7 +21,7 @@ target_sources(YACCLAB
         labeling2D_4_phantom.cc
         labeling2D_4_phantom_fsm.cc
         labeling2D_4_spaghetti.cc
-        
+
         labels_solver.cc
         main.cc
         system_info.cc
@@ -54,6 +54,8 @@ if(YACCLAB_ENABLE_3D)
         labeling3D_PREDpp_2021.cc
         labeling3D_SAUF_2021.cc
         labeling3D_SAUFpp_2021.cc
+        
+        labeling3D_sauf_6c.cc
     )
     if(YACCLAB_ENABLE_EPDT_19C)
         target_sources(YACCLAB PRIVATE

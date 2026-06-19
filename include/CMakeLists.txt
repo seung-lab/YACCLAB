@@ -89,7 +89,9 @@ if(YACCLAB_ENABLE_3D)
         labeling3D_PREDpp_2021_cl_forest.inc.h
         labeling3D_PREDpp_2021_fl_forest.inc.h
         labeling3D_PREDpp_2021_ll_forest.inc.h
-        labeling3D_PREDpp_2021_sl_forest.inc.h        
+        labeling3D_PREDpp_2021_sl_forest.inc.h
+
+        labeling3D_sauf_6c.h
     )
     if(YACCLAB_ENABLE_EPDT_19C)
         target_sources(YACCLAB PRIVATE        
