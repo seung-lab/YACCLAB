@@ -112,7 +112,7 @@ public:
         const int h = img_.rows;
         const int w = img_.cols;
 
-        LabelsSolver::MemAlloc(UPPER_BOUND_8_CONNECTIVITY); // Equivalence solver
+        LabelsSolver::MemAlloc(UPPER_BOUND_4_CONNECTIVITY); // Equivalence solver
 
         // Data structure for memory test
         MemMat<unsigned char> img(img_);
