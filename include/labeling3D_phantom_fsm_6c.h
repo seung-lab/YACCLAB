@@ -22,6 +22,7 @@ public:
 	{
 		// img_labels_ = cv::Mat1i(img_.size(), 0); // Allocation + initialization of the output image
 		img_labels_.create(3, img_.size.p, CV_32SC1);
+		memset(img_labels_.data, 0, img_labels_.total() * sizeof(int));
 
 		LabelsSolver::Alloc(UPPER_BOUND_6_CONNECTIVITY); // Memory allocation of the labels solver
 		LabelsSolver::Setup(); // Labels solver initialization
@@ -76,7 +77,6 @@ public:
 				int x = 0;
 
 				if (!img_row[x]) {
-					labels_row[x] = 0;
 					goto BACKGROUND;
 				}
 				else if (y > 0 && img_prev_row[x]) {
@@ -207,7 +207,6 @@ public:
 					}
 
 					if (!img_row[x]) {
-						labels_row[x] = 0;
 						goto BACKGROUND;
 					}
 					else if (y > 0 && img_prev_row[x]) {
