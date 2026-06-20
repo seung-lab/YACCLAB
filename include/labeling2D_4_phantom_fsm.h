@@ -138,14 +138,12 @@ public:
         // Second scan
         n_labels_ = LabelsSolver::Flatten();
 
-        for (int r = 0; r < img_labels_.rows; ++r) {
-            unsigned * img_row_start = img_labels_.ptr<unsigned>(r);
-            unsigned * const img_row_end = img_row_start + img_labels_.cols;
-            for (; img_row_start != img_row_end; ++img_row_start) {
-                *img_row_start = LabelsSolver::GetLabel(*img_row_start);
-            }
+        const int pixels = h * w;
+        unsigned * img_row = img_labels_.ptr<unsigned>(0);
+        for (int i = 0; i < pixels; i++) {
+            img_row[i] = LabelsSolver::GetLabel(img_row[i]);
         }
-
+        
         LabelsSolver::Dealloc(); // Memory deallocation of the labels solver
     }
 
@@ -452,12 +450,13 @@ private:
     {
         n_labels_ = LabelsSolver::Flatten();
 
-        for (int r = 0; r < img_labels_.rows; ++r) {
-            unsigned * img_row_start = img_labels_.ptr<unsigned>(r);
-            unsigned * const img_row_end = img_row_start + img_labels_.cols;
-            for (; img_row_start != img_row_end; ++img_row_start) {
-                *img_row_start = LabelsSolver::GetLabel(*img_row_start);
-            }
+        const int h = img_.rows;
+        const int w = img_.cols;
+
+        const int pixels = h * w;
+        unsigned * img_row = img_labels_.ptr<unsigned>(0);
+        for (int i = 0; i < pixels; i++) {
+            img_row[i] = LabelsSolver::GetLabel(img_row[i]);
         }
     }
 };
