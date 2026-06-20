@@ -338,43 +338,165 @@ public:
 				int * const labels_row = labels_plane + (img_labels_.step[1] / sizeof(int)) * y;
 				int * const labels_prev_row = labels_row - (img_labels_.step[1] / sizeof(int));
 
-				for (int x = 0; x < img_.size[2]; x++) {
-					if (!img_row[x]) {
-						labels_row[x] = 0;
+				const int sx = img_.size[2];
+				int x = 0;
+
+				if (!img_row[x]) {
+					labels_row[x] = 0;
+					goto BACKGROUND;
+				}
+				else if (y > 0 && img_prev_row[x]) {
+					labels_row[x] = labels_prev_row[x];
+
+					if (z > 0 && img_prev_plane_rows[1][x] && !img_prev_plane_rows[0][x]) {
+						LabelsSolver::Merge(labels_row[x], labels_prev_plane_rows[1][x]);
+						goto PHANTOM_PD;
+					}
+
+					goto PHANTOM_P;
+				}
+				else if (z > 0 && img_prev_plane_rows[1][x]) {
+					labels_row[x] = labels_prev_plane_rows[1][x];
+					goto PHANTOM_D;
+				}
+				else {
+					labels_row[x] = LabelsSolver::NewLabel();
+					goto PHANTOM_ABSENT;
+				}
+
+				PHANTOM_ABSENT:
+					x++;
+					if (x >= sx) {
 						continue;
 					}
-					
-					if (x > 0 && img_row[x-1]) {
-						if (y > 0 && img_prev_row[x] && !img_prev_row[x-1]) {
-							labels_row[x] = LabelsSolver::Merge(labels_row[x-1], labels_prev_row[x]);
-							if (z > 0 && img_prev_plane_rows[1][x] && !img_prev_plane_rows[0][x]) {
+
+					if (img_row[x] == 0) {
+					  goto BACKGROUND;
+					}
+
+					labels_row[x] = labels_row[x-1];
+
+					if (y > 0 && img_prev_row[x] && !img_prev_row[x-1]) {
+						LabelsSolver::Merge(labels_row[x], labels_prev_row[x]);
+						if (z > 0 && img_prev_plane_rows[1][x]) {
+							if (!img_prev_plane_rows[1][x-1] && !img_prev_plane_rows[0][x]) {
 								LabelsSolver::Merge(labels_row[x], labels_prev_plane_rows[1][x]);
 							}
+							goto PHANTOM_PD;
 						}
-						else if (z > 0 && img_prev_plane_rows[1][x] && !img_prev_plane_rows[1][x-1]) {
-							labels_row[x] = LabelsSolver::Merge(labels_row[x-1], labels_prev_plane_rows[1][x]);
+
+						goto PHANTOM_P;
+					}
+					else if (z > 0 && img_prev_plane_rows[1][x] && !img_prev_plane_rows[1][x-1]) {
+					  LabelsSolver::Merge(labels_row[x], labels_prev_plane_rows[1][x]);
+					  goto PHANTOM_D;
+					}
+
+					goto PHANTOM_ABSENT;
+
+				PHANTOM_PD:
+					x++;
+					if (x >= sx) {
+						continue;
+					}
+
+					if (img_row[x] == 0) {
+					  goto BACKGROUND;
+					}
+
+					labels_row[x] = labels_row[x-1];
+					
+					if (y > 0 && img_prev_row[x]) {
+						if (z > 0 && img_prev_plane_rows[1][x]) {
+							goto PHANTOM_PD;
 						}
-						else {
-							labels_row[x] = labels_row[x-1];
+						goto PHANTOM_P;
+					}
+					else if (z > 0 && img_prev_plane_rows[1][x]) {
+						goto PHANTOM_D;
+					}
+					goto PHANTOM_ABSENT;
+
+				PHANTOM_D:
+					x++;
+					if (x >= sx) {
+						continue;
+					}
+
+					if (img_row[x] == 0) {
+					  goto BACKGROUND;
+					}
+
+					labels_row[x] = labels_row[x-1];
+
+					if (y > 0 && img_prev_row[x]) {
+						LabelsSolver::Merge(labels_row[x], labels_prev_row[x]);
+						if (z > 0 && img_prev_plane_rows[1][x]) {
+							goto PHANTOM_PD;
 						}
+						goto PHANTOM_P;
+					}
+					goto PHANTOM_ABSENT;
+
+				PHANTOM_P:
+					x++;
+					if (x >= sx) {
+						continue;
+					}
+
+					if (img_row[x] == 0) {
+					  goto BACKGROUND;
+					}
+
+					labels_row[x] = labels_row[x-1];
+
+					if (y > 0 && img_prev_row[x]) {
+					  if (z > 0 && img_prev_plane_rows[1][x]) { 
+					    if (!img_prev_plane_rows[0][x]) {
+					      LabelsSolver::Merge(labels_row[x], labels_prev_plane_rows[1][x]);
+					    }
+					    goto PHANTOM_PD;
+					  }
+					  goto PHANTOM_P;
+					}
+					else if (z > 0 && img_prev_plane_rows[1][x] && !img_prev_plane_rows[1][x-1]) {
+					  LabelsSolver::Merge(labels_row[x], labels_prev_plane_rows[1][x]);
+					  goto PHANTOM_D;
+					}
+
+					goto PHANTOM_ABSENT;
+
+				BACKGROUND:
+					x++;
+					if (x >= sx) {
+						continue;
+					}
+
+					if (!img_row[x]) {
+						labels_row[x] = 0;
+						goto BACKGROUND;
 					}
 					else if (y > 0 && img_prev_row[x]) {
+						labels_row[x] = labels_prev_row[x];
+
 						if (z > 0 && img_prev_plane_rows[1][x] && !img_prev_plane_rows[0][x]) {
-							labels_row[x] = LabelsSolver::Merge(labels_prev_row[x], labels_prev_plane_rows[1][x]);
+							LabelsSolver::Merge(labels_row[x], labels_prev_plane_rows[1][x]);
+							goto PHANTOM_PD;
 						}
-						else {
-							labels_row[x] = labels_prev_row[x];
-						}
+
+						goto PHANTOM_P;
 					}
 					else if (z > 0 && img_prev_plane_rows[1][x]) {
 						labels_row[x] = labels_prev_plane_rows[1][x];
+						goto PHANTOM_D;
 					}
 					else {
 						labels_row[x] = LabelsSolver::NewLabel();
+						goto PHANTOM_ABSENT;
 					}
-				}
 			} // Rows cycle end
 		} // Planes cycle end
+
 	}
 
 	void SecondScan() {
