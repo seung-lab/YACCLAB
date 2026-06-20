@@ -57,6 +57,7 @@ if(YACCLAB_ENABLE_3D)
         
         labeling3D_sauf_6c.cc
         labeling3D_phantom_6c.cc
+        labeling3D_phantom_fsm_6c.cc
     )
     if(YACCLAB_ENABLE_EPDT_19C)
         target_sources(YACCLAB PRIVATE
