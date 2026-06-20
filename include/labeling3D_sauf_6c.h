@@ -114,13 +114,9 @@ public:
 		LabelsSolver::Flatten();
 
 		int * img_row = reinterpret_cast<int*>(img_labels_.data);
-		for (int z = 0; z < img_labels_.size[0]; z++) {
-			for (int y = 0; y < img_labels_.size[1]; y++) {
-				for (int x = 0; x < img_labels_.size[2]; x++) {
-					img_row[x] = LabelsSolver::GetLabel(img_row[x]);
-				}
-				img_row += img_labels_.step[1] / sizeof(int);
-			}
+		int voxels = img_labels_.size[0] * img_labels_.size[1] * img_labels_.size[2];
+		for (int i = 0; i < voxels; i++) {
+			img_row[i] = LabelsSolver::GetLabel(img_row[i]);
 		}
 
 		LabelsSolver::Dealloc(); // Memory deallocation of the labels solver
