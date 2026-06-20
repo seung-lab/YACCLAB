@@ -66,12 +66,10 @@ public:
         // Second scan
         n_labels_ = LabelsSolver::Flatten();
 
-        for (int r = 0; r < img_labels_.rows; ++r) {
-            unsigned * img_row_start = img_labels_.ptr<unsigned>(r);
-            unsigned * const img_row_end = img_row_start + img_labels_.cols;
-            for (; img_row_start != img_row_end; ++img_row_start) {
-                *img_row_start = LabelsSolver::GetLabel(*img_row_start);
-            }
+        const unsigned int pixels = h * w;
+        unsigned int * img_data = reinterpret_cast<unsigned int*>(img_labels_.data);
+        for (unsigned int i = 0; i < pixels; i++) {
+            img_data[i] = LabelsSolver::GetLabel(img_data[i]);
         }
 
         LabelsSolver::Dealloc(); // Memory deallocation of the labels solver
@@ -158,12 +156,12 @@ public:
         // Second scan
         n_labels_ = LabelsSolver::MemFlatten();
 
-        const unsigned int pixels = h * w;
-        unsigned int * img_data = reinterpret_cast<unsigned int*>(img_labels_.data);
-        for (unsigned int i = 0; i < pixels; i++) {
-            img_data[i] = LabelsSolver::MemGetLabel(img_data[i]);
+        for (int r = 0; r < h; ++r) {
+            for (int c = 0; c < w; ++c) {
+                img_labels(r, c) = LabelsSolver::MemGetLabel(img_labels(r, c));
+            }
         }
-        
+
         // Store total accesses in the output vector 'accesses'
         accesses = std::vector<uint64_t>((int)MD_SIZE, 0);
 
@@ -276,13 +274,13 @@ private:
     {
         n_labels_ = LabelsSolver::Flatten();
 
-        const unsigned int w(img_.cols);
-        const unsigned int h(img_.rows);
+        const unsigned int h(img_labels_.cols);
+        const unsigned int w(img_labels_.rows);
 
         const unsigned int pixels = h * w;
         unsigned int * img_data = reinterpret_cast<unsigned int*>(img_labels_.data);
         for (unsigned int i = 0; i < pixels; i++) {
-            img_data[i] = LabelsSolver::MemGetLabel(img_data[i]);
+            img_data[i] = LabelsSolver::GetLabel(img_data[i]);
         }
     }
 };
