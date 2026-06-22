@@ -148,10 +148,10 @@ public:
         // Second scan
         n_labels_ = LabelsSolver::MemFlatten();
 
-        const unsigned int pixels = h * w;
-        unsigned int * img_data = reinterpret_cast<unsigned int*>(img_labels_.data);
-        for (unsigned int i = 0; i < pixels; i++) {
-            img_data[i] = LabelsSolver::MemGetLabel(img_data[i]);
+        for (int r = 0; r < h; ++r) {
+            for (int c = 0; c < w; ++c) {
+                img_labels(r, c) = LabelsSolver::MemGetLabel(img_labels(r, c));
+            }
         }
 
         // Store total accesses in the output vector 'accesses'
